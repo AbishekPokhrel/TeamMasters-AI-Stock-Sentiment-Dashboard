@@ -66,14 +66,6 @@ The application follows a modular architecture:
 
 ---
 
-## 📸 Screenshots
-
-> Add your screenshots here for full demonstration
-
-![Dashboard](images/dashboard.png)
-![Login](images/login.png)
-
----
 
 ## ⚙️ Setup Instructions
 
