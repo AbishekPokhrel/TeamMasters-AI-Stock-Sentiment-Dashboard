@@ -67,10 +67,3 @@ The application follows a modular architecture:
 ---
 
 
-## ⚙️ Setup Instructions
-
-### 1️⃣ Clone Repository
-
-```bash
-git clone https://github.com/AbishekPokhrel/TeamMasters-AI-Stock-Sentiment-Dashboard.git
-cd TeamMasters-AI-Stock-Sentiment-Dashboard
