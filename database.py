@@ -53,18 +53,27 @@ def send_reset_password_email(email):
 
 def update_user_password(new_password):
     try:
+        access_token = st.session_state.get("supabase_access_token")
+        refresh_token = st.session_state.get("supabase_refresh_token")
+
+        if access_token and refresh_token:
+            supabase.auth.set_session(access_token, refresh_token)
+        else:
+            st.error("Update password error: Auth session missing!")
+            return False
+
         response = supabase.auth.update_user({
             "password": new_password
         })
 
         if response and response.user:
             return True
+
         return False
 
     except Exception as e:
         st.error(f"Update password error: {e}")
         return False
-
 
 def create_profile(user_id, username, email):
     try:
