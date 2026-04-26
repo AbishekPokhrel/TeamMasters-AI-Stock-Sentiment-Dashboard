@@ -38,16 +38,18 @@ def logout_user():
 
 def send_reset_password_email(email):
     try:
-        app_url = st.secrets.get("APP_URL", "http://localhost:8501")
+        APP_URL = "https://teammasters-ai-stock-sentiment-dashboard-akkrcdbykusryyyknbljy.streamlit.app"
+
         supabase.auth.reset_password_for_email(
             email,
-            {"redirect_to": f"{app_url}?type=recovery"}
+            {
+                "redirect_to": APP_URL
+            }
         )
         return True
     except Exception as e:
-        st.error(f"Reset password error: {e}")
+        st.error(f"Password reset error: {e}")
         return False
-
 
 def update_user_password(new_password):
     try:
