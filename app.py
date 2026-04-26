@@ -48,17 +48,20 @@ if (
             "type": "recovery"
         })
 
-        if response and response.session:
-            supabase.auth.set_session(
-                response.session.access_token,
-                response.session.refresh_token
-            )
+       if response and response.session:
+    st.session_state.supabase_access_token = response.session.access_token
+    st.session_state.supabase_refresh_token = response.session.refresh_token
 
-            st.session_state.reset_session = True
-            st.session_state.auth_mode = "reset_password"
-            st.session_state.processed_recovery_token = token_hash
+    supabase.auth.set_session(
+        st.session_state.supabase_access_token,
+        st.session_state.supabase_refresh_token
+    )
 
-            st.rerun()
+    st.session_state.reset_session = True
+    st.session_state.auth_mode = "reset_password"
+    st.session_state.processed_recovery_token = token_hash
+
+    st.rerun()
         else:
             st.session_state.reset_session = False
             st.error("Recovery verification failed.")
