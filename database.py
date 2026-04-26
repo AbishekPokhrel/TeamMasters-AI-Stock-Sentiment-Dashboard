@@ -53,10 +53,14 @@ def send_reset_password_email(email):
 
 def update_user_password(new_password):
     try:
-        supabase.auth.update_user({
+        response = supabase.auth.update_user({
             "password": new_password
         })
-        return True
+
+        if response and response.user:
+            return True
+        return False
+
     except Exception as e:
         st.error(f"Update password error: {e}")
         return False
