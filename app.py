@@ -41,45 +41,30 @@ if (
     and not st.session_state.reset_session
     and st.session_state.processed_recovery_token != token_hash
 ):
-    try:
-  response = supabase.auth.verify_otp({
-    "token_hash": token_hash,
-    "type": "recovery"
-})
+  try:
+    response = supabase.auth.verify_otp({
+        "token_hash": token_hash,
+        "type": "recovery"
+    })
 
-if response and response.session:
-    supabase.auth.set_session(
-        response.session.access_token,
-        response.session.refresh_token
-    )
+    if response and response.session:
+        supabase.auth.set_session(
+            response.session.access_token,
+            response.session.refresh_token
+        )
 
-    st.session_state.reset_session = True
-    st.session_state.auth_mode = "reset_password"
-    st.session_state.processed_recovery_token = token_hash
-    st.rerun()
-else:
-    st.session_state.reset_session = False
-    st.error("Recovery verification failed. Session was not created.")
+        st.session_state.reset_session = True
+        st.session_state.auth_mode = "reset_password"
+        st.session_state.processed_recovery_token = token_hash
 
-        if response and response.user:
-            st.session_state.reset_session = True
-            st.session_state.auth_mode = "reset_password"
-            st.session_state.processed_recovery_token = token_hash
-
-            # clear token params so reruns do not re-verify the same token
-            try:
-                st.query_params.clear()
-            except Exception:
-                pass
-
-            st.rerun()
-        else:
-            st.session_state.reset_session = False
-            st.error("Recovery verification failed.")
-
-    except Exception as e:
+        st.rerun()
+    else:
         st.session_state.reset_session = False
-        st.error(f"Recovery verification error: {e}")
+        st.error("Recovery verification failed.")
+
+except Exception as e:
+    st.session_state.reset_session = False
+    st.error(f"Recovery verification error: {e}")
 
 
 # --------------------------------
