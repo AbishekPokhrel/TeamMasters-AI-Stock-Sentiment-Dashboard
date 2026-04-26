@@ -30,7 +30,12 @@ def init_session_state():
         st.session_state.landing_section = "home"
     if "reset_session" not in st.session_state:
         st.session_state.reset_session = False
-
+    if "processed_recovery_token" not in st.session_state:
+        st.session_state.processed_recovery_token = None
+    if "supabase_access_token" not in st.session_state:
+        st.session_state.supabase_access_token = None
+    if "supabase_refresh_token" not in st.session_state:
+        st.session_state.supabase_refresh_token = None
 
 def do_logout():
     st.session_state.logged_in = False
@@ -175,9 +180,18 @@ def reset_password_section():
 
             if success:
                 st.success("Password updated successfully. Please login with your new password.")
+
                 st.session_state.reset_session = False
                 st.session_state.processed_recovery_token = None
+                st.session_state.supabase_access_token = None
+                st.session_state.supabase_refresh_token = None
                 st.session_state.auth_mode = "login"
+
+                try:
+                    st.query_params.clear()
+                except Exception:
+                    pass
+
                 st.rerun()
             else:
                 st.error("Failed to update password.")
@@ -185,11 +199,18 @@ def reset_password_section():
     if st.button("Back to Login", use_container_width=True, key="back_from_reset"):
         st.session_state.reset_session = False
         st.session_state.processed_recovery_token = None
+        st.session_state.supabase_access_token = None
+        st.session_state.supabase_refresh_token = None
         st.session_state.auth_mode = "login"
+
+        try:
+            st.query_params.clear()
+        except Exception:
+            pass
+
         st.rerun()
 
     st.markdown('</div>', unsafe_allow_html=True)
-
 def show_navbar():
     nav1, nav2, nav3, nav4, nav5, nav6, nav7 = st.columns([2.3, 1, 1, 1, 1, 1, 1])
 
