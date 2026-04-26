@@ -34,7 +34,6 @@ query_params = st.query_params
 token_hash = query_params.get("token_hash")
 recovery_type = query_params.get("type")
 email = query_params.get("email")
-
 if (
     token_hash
     and recovery_type == "recovery"
@@ -42,33 +41,33 @@ if (
     and not st.session_state.reset_session
     and st.session_state.processed_recovery_token != token_hash
 ):
-   try:
-    response = supabase.auth.verify_otp({
-        "token_hash": token_hash,
-        "type": "recovery"
-    })
+    try:
+        response = supabase.auth.verify_otp({
+            "token_hash": token_hash,
+            "type": "recovery"
+        })
 
-    if response and response.session:
-        st.session_state.supabase_access_token = response.session.access_token
-        st.session_state.supabase_refresh_token = response.session.refresh_token
+        if response and response.session:
+            st.session_state.supabase_access_token = response.session.access_token
+            st.session_state.supabase_refresh_token = response.session.refresh_token
 
-        supabase.auth.set_session(
-            st.session_state.supabase_access_token,
-            st.session_state.supabase_refresh_token
-        )
+            supabase.auth.set_session(
+                st.session_state.supabase_access_token,
+                st.session_state.supabase_refresh_token
+            )
 
-        st.session_state.reset_session = True
-        st.session_state.auth_mode = "reset_password"
-        st.session_state.processed_recovery_token = token_hash
+            st.session_state.reset_session = True
+            st.session_state.auth_mode = "reset_password"
+            st.session_state.processed_recovery_token = token_hash
 
-        st.rerun()
-    else:
+            st.rerun()
+        else:
+            st.session_state.reset_session = False
+            st.error("Recovery verification failed.")
+
+    except Exception as e:
         st.session_state.reset_session = False
-        st.error("Recovery verification failed.")
-
-except Exception as e:
-    st.session_state.reset_session = False
-    st.error(f"Recovery verification error: {e}")
+        st.error(f"Recovery verification error: {e}")
 # --------------------------------
 # NORMAL IMPORTS
 # --------------------------------
